@@ -31,6 +31,7 @@ int main()
 
     // Create disk
     MemPool disk(DISKSIZE, BLOCKSIZE);
+    cout << "Blocksize is : " << BLOCKSIZE << endl;
 
     // Read data into file
     std::ifstream file("../data/data.tsv");
@@ -71,6 +72,29 @@ int main()
 
         file.close();   
     }
+
+    // Set max keys available in a node. Each key is a float, each pointer is a struct of {void *blockAddress, short int offset}.
+    // Therefore, each key is 4 bytes. Each pointer is around 16 bytes.
+
+    // Initialize node buffer with a pointer. P | K | P , always one more pointer than keys.
+    tuple<void*, uint> dataRecord = dataset.front();
+    size_t nodeBufferSize = BLOCKSIZE - sizeof(bool) - sizeof(int);
+    void* blockAddress = (uchar*)get<0>(dataRecord);
+    uint offset = get<1>(dataRecord);
+
+    cout << "block address : " << blockAddress << " with offset " << offset << endl;
+    cout << "Node Buffer Siz : " << nodeBufferSize << endl;
+    size_t sum = sizeof(blockAddress + offset);
+    cout << "Address Size : " << sum << endl;
+    int maxKeys = 0;
+ 
+    // Try to fit as many pointer key pairs as possible into the node block.
+    while (sum + sizeof(blockAddress + offset) + 8 <= nodeBufferSize)
+    {
+        sum += (sizeof(blockAddress + offset) + 8);
+        maxKeys += 1;
+    }
+    cout << "Max Keys : " << maxKeys << endl;
 
     std::cout << "\n=====================================Experiment 1==========================================" << endl;
     std::cout << "Number of blocks (Allocated) : " << disk.getNumAllocBlks() << endl;
@@ -132,7 +156,7 @@ int main()
 
     std::cout << "\n=====================================Experiment 5==========================================" << endl;
     keys_struct key;
-    key.key_value = 500;
+    key.key_value = 1000;
     key.add_vect.push_back((uchar*) nullptr);
 
     int beforeNum =  node.getNodesCount();

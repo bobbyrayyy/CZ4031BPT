@@ -6,9 +6,9 @@
 #include <tuple>
 #include <algorithm>
 
-const int MAX = 16;
+const int MAX = 30;
 const int RECORDSIZE = 20;
-const int BLOCKSIZE = 200;  // Or change to 500B manually 
+const int BLOCKSIZE = 500;  // Or change to 500B manually 
 typedef unsigned int uint;
 typedef unsigned char uchar;
 
