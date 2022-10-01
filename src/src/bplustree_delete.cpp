@@ -1,41 +1,30 @@
-/*
-Created by Jin Han
-For CZ4031 B+ Tree implementation and experiments project
-
-This file implements deletion on a b+ tree
-*/
-
-// include all the files that are needed
 #include "bplustree.h"
 #include "types.h"
 
-// include all the libraries needed
 #include <vector>
 #include <cstring>
 #include <iostream>
 
 using namespace std;
 
-// To delete a movie from the B+ Tree index. Key: Movies's numVotes
 void BPTree::remove(keys_struct x)
 {
     if (root == NULL)
     {
-        cout << "B+ Tree is empty" << endl;
+        cout << "Empty B+ Tree" << endl;
     }
     else
     {
-        Node* cursor = root;
-        Node* parent;
+        Node *cursor = root;
+        Node *parent;
         int leftSibling, rightSibling;
-        //in the following while loop, cursor will will travel to the leaf node possibly consisting the key
-        while (cursor->IS_LEAF == false)
+        while (not(cursor->isLeaf))
         {
             for (int i = 0; i < cursor->size; i++)
             {
                 parent = cursor;
-                leftSibling = i - 1; //leftSibling is the index of left sibling in the parent node
-                rightSibling = i + 1; //rightSibling is the index of right sibling in the parent node
+                leftSibling = i - 1;
+                rightSibling = i + 1;
                 if (x.key_value < cursor->key[i].key_value)
                 {
                     cursor = cursor->ptr[i];
@@ -50,7 +39,6 @@ void BPTree::remove(keys_struct x)
                 }
             }
         }
-        //in the following for loop, we search for the key if it exists
         bool found = false;
         int pos;
         for (pos = 0; pos < cursor->size; pos++)
@@ -62,31 +50,29 @@ void BPTree::remove(keys_struct x)
             }
         }
 
-        if (!found)//if key does not exist in that leaf node
+        if (!found)
         {
             cout << "Not found" << endl;
             return;
         }
-        //deleting the key
         for (int i = pos; i < cursor->size; i++)
         {
             cursor->key[i] = cursor->key[i + 1];
         }
         cursor->size--;
-        if (cursor == root)//if it is root node, then make all pointers NULL
+        if (cursor == root)
         {
-            cout << "Deleted " << x.key_value << " " << "from leaf node successfully\n";
+            cout << "Deleted " << x.key_value << " from leaf node successfully" << endl;
             for (int i = 0; i < MAX + 1; i++)
             {
                 cursor->ptr[i] = NULL;
             }
-            if (cursor->size == 0)//if all keys are deleted
+            if (cursor->size == 0)
             {
-                //cout<<"Tree died\n";
                 delete[] cursor->key;
                 delete[] cursor->ptr;
                 delete cursor;
-                cout << "Deleted 1" << "\n";
+                cout << "Deleted a node" << endl;
                 nodesCount--;
                 root = NULL;
             }
@@ -94,74 +80,54 @@ void BPTree::remove(keys_struct x)
         }
         cursor->ptr[cursor->size] = cursor->ptr[cursor->size + 1];
         cursor->ptr[cursor->size + 1] = NULL;
-        cout << "Deleted " << x.key_value << " " << " from leaf node successfully\n";
-        if (cursor->size >= (MAX + 1) / 2)//no underflow
+        cout << "Deleted " << x.key_value << " from leaf node successfully" << endl;
+        if (cursor->size >= (MAX + 1) / 2)
         {
             return;
         }
-        //cout<<"Underflow in leaf node!\n";
-        //underflow condition
-        //first we try to transfer a key from sibling node
-        //check if left sibling exists
         if (leftSibling >= 0)
         {
-            Node* leftNode = parent->ptr[leftSibling];
-            //check if it is possible to transfer
+            Node *leftNode = parent->ptr[leftSibling];
             if (leftNode->size >= (MAX + 1) / 2 + 1)
             {
-                //make space for transfer
                 for (int i = cursor->size; i > 0; i--)
                 {
                     cursor->key[i] = cursor->key[i - 1];
                 }
-                //shift pointer to next leaf
                 cursor->size++;
                 cursor->ptr[cursor->size] = cursor->ptr[cursor->size - 1];
                 cursor->ptr[cursor->size - 1] = NULL;
-                //transfer
                 cursor->key[0] = leftNode->key[leftNode->size - 1];
-                //shift pointer of leftsibling
                 leftNode->size--;
                 leftNode->ptr[leftNode->size] = cursor;
                 leftNode->ptr[leftNode->size + 1] = NULL;
-                //update parent
                 parent->key[leftSibling] = cursor->key[0];
-                //cout<<"Transferred "<<cursor->key[0].key_value << " " << cursor->key[0].add_vect[0] <<" from left sibling of leaf node\n";
                 return;
             }
         }
-        if (rightSibling <= parent->size)//check if right sibling exist
+        if (rightSibling <= parent->size)
         {
-            Node* rightNode = parent->ptr[rightSibling];
-            //check if it is possible to transfer
+            Node *rightNode = parent->ptr[rightSibling];
             if (rightNode->size >= (MAX + 1) / 2 + 1)
             {
-                //shift pointer to next leaf
                 cursor->size++;
                 cursor->ptr[cursor->size] = cursor->ptr[cursor->size - 1];
                 cursor->ptr[cursor->size - 1] = NULL;
-                //transfer
                 cursor->key[cursor->size - 1] = rightNode->key[0];
-                //shift pointer of rightsibling
                 rightNode->size--;
                 rightNode->ptr[rightNode->size] = rightNode->ptr[rightNode->size + 1];
                 rightNode->ptr[rightNode->size + 1] = NULL;
-                //shift conent of right sibling
                 for (int i = 0; i < rightNode->size; i++)
                 {
                     rightNode->key[i] = rightNode->key[i + 1];
                 }
-                //update parent
                 parent->key[rightSibling - 1] = rightNode->key[0];
-                //cout<<"Transferred "<<cursor->key[cursor->size-1].key_value <<" "<< cursor->key[cursor->size-1].add_vect[0] <<" from right sibling of leaf node\n";
                 return;
             }
         }
-        //must merge and delete a node
-        if (leftSibling >= 0)//if left sibling exist
+        if (leftSibling >= 0)
         {
-            Node* leftNode = parent->ptr[leftSibling];
-            // transfer all keys to leftsibling and then transfer pointer to next leaf node
+            Node *leftNode = parent->ptr[leftSibling];
             for (int i = leftNode->size, j = 0; j < cursor->size; i++, j++)
             {
                 leftNode->key[i] = cursor->key[j];
@@ -170,18 +136,16 @@ void BPTree::remove(keys_struct x)
             leftNode->size += cursor->size;
             leftNode->ptr[leftNode->size] = cursor->ptr[cursor->size];
 
-            //cout<<"Merging two leaf nodes\n";
-            removeInternal(parent->key[leftSibling], parent, cursor);// delete parent node key
+            removeInternal(parent->key[leftSibling], parent, cursor);
             delete[] cursor->key;
             delete[] cursor->ptr;
             delete cursor;
-            cout << "Deleted 1" << "\n";
+            cout << "Deleted 1" << endl;
             nodesCount--;
         }
-        else if (rightSibling <= parent->size)//if right sibling exist
+        else if (rightSibling <= parent->size)
         {
-            Node* rightNode = parent->ptr[rightSibling];
-            // transfer all keys to cursor and then transfer pointer to next leaf node
+            Node *rightNode = parent->ptr[rightSibling];
             for (int i = cursor->size, j = 0; j < rightNode->size; i++, j++)
             {
                 cursor->key[i] = rightNode->key[j];
@@ -189,12 +153,11 @@ void BPTree::remove(keys_struct x)
             cursor->ptr[cursor->size] = NULL;
             cursor->size += rightNode->size;
             cursor->ptr[cursor->size] = rightNode->ptr[rightNode->size];
-            //cout<<"Merging two leaf nodes\n";
-            removeInternal(parent->key[rightSibling - 1], parent, rightNode);// delete parent node key
+            removeInternal(parent->key[rightSibling - 1], parent, rightNode);
             delete[] rightNode->key;
             delete[] rightNode->ptr;
             delete rightNode;
-            cout << "Deleted 1 \n";
+            cout << "Deleted a node" << endl;
             nodesCount--;
         }
     }
