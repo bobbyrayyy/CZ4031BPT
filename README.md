@@ -37,8 +37,8 @@ g++ -c disk_storage.cpp;
 g++ -o main.exe bplustree_insert.o bplustree_delete.o bplustree_search.o bplustree.o disk_storage.o main.o
 ```
 5. Seting block size
-To run experiment with block size 200B, go to disk_storage.h and uncomment lines 13 and 14, and comment out lines 17 and 18.
-To run experiment with block size 500B, go to disk_storage.h and comment out lines 13 and 14, and uncomment lines 17 and 18.
+- To run experiment with block size 200B, go to disk_storage.h and uncomment lines 13 and 14, and comment out lines 17 and 18.
+- To run experiment with block size 500B, go to disk_storage.h and comment out lines 13 and 14, and uncomment lines 17 and 18.
 (Clear instructions in disk_storage.h)
 
 6. Run main.exe
