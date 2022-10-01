@@ -71,7 +71,7 @@ Node *BPTree::search(int lowerBound, bool flag, bool printer)
             {
                 if (flag == true)
                 {
-                    cout << "Size: " << cursor->key[i].keyVector.size() << "\n";
+                    cout << "Number of records returned: " << cursor->key[i].keyVector.size() << "\n";
                     float res = ceil((cursor->key[i].keyVector.size() * RECORDSIZE) / BLOCKSIZE);
                     cout << "Number of data blocks: " << res << endl;
 
