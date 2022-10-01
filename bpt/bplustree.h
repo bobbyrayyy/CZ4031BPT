@@ -2,7 +2,7 @@
 #define BPLUSTREE_H
 
 #include "types.h"
-#include "disk_storage.h"
+#include "../storage/disk_storage.h"
 
 #include <cstddef>
 #include <array>

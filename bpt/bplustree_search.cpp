@@ -8,7 +8,7 @@
 
 #include "bplustree.h"
 #include "types.h"
-#include "disk_storage.h"
+#include "../storage/disk_storage.h"
 
 using namespace std;
 

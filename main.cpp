@@ -1,6 +1,6 @@
-#include "disk_storage.h"
-#include "bplustree.h"
-#include "types.h"
+#include "storage/disk_storage.h"
+#include "bpt/bplustree.h"
+#include "bpt/types.h"
 
 #include <iostream>
 #include <fstream>
