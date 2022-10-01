@@ -2,7 +2,7 @@
 
 ## Introduction
 This project is for NTU's CZ4031 module. 
-It is a implementation of a B+ tree index to store records from data/data.tsv, which contain information about movies from IMDB.
+It is a implementation of a B+ tree index component and a simulated disk storage component to store records from data/data.tsv, which contain information about movies from IMDB.
 
 The project is written in C++.
 
