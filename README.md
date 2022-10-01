@@ -49,11 +49,11 @@ g++ -o main.exe bplustree_insert.o bplustree_delete.o bplustree_search.o bplustr
 Experiment results are printed in terminal.
 
 ## Contributors
-Bob Lin
-Gareth
-Jin Han
-Kai Feng
-Louis
+- Bob Lin
+- Gareth
+- Jin Han
+- Kai Feng
+- Louis
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
