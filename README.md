@@ -55,5 +55,10 @@ Experiment results are printed in terminal.
 - Kai Feng
 - Louis
 
+## References
+- https://www.programiz.com/dsa/deletion-from-a-b-plus-tree
+- https://www.programiz.com/dsa/b-plus-tree
+
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
