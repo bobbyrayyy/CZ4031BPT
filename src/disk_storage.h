@@ -6,11 +6,21 @@
 #include <tuple>
 #include <algorithm>
 
-// const int MAX = 30; // 30 is for 500, 11 is for 200
+// ---------------------------------- START OF MANUAL CHANGING ZONE --------------------------------------
+// --- NOTE: ONLY MANUALLY CHANGE THIS PART OF THE CODE WHEN SWITCHING BETWEEN 200B or 500B BLOCK SIZE ---
+
+// IF BLOCK SIZE 200B, UNCOMMENT THE FOLLOWING 2 LINES 
 const int MAX = 11;
-const int RECORDSIZE = 20;
-// const int BLOCKSIZE = 500; // Or change to 500B manually
 const int BLOCKSIZE = 200;
+
+// IF BLOCK SIZE 500B, UNCOMMENT THE FOLLOWING 2 LINES
+// const int MAX = 30; // 30 is for 500, 11 is for 200
+// const int BLOCKSIZE = 500; // Or change to 500B manually
+
+// ------------------------------------ END OF MANUAL CHANGING ZONE ---------------------------------------
+
+const int RECORDSIZE = 20;
+
 typedef unsigned int uint;
 typedef unsigned char uchar;
 
