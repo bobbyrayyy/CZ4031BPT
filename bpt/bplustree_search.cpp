@@ -17,6 +17,8 @@ Node *BPTree::search(int lowerBound, bool flag, bool printer)
     float totalAverageRating = 0.000000;
     int countOfIndexNodesAccessed = 1;
     int printedIndexNodes = 0;
+    int recordsInADataBlock = 0;
+    int printedDataBlocks = 0;
 
     if (root == NULL)
     {
@@ -74,20 +76,31 @@ Node *BPTree::search(int lowerBound, bool flag, bool printer)
                     cout << "Number of records returned: " << cursor->key[i].keyVector.size() << "\n";
                     float res = ceil((cursor->key[i].keyVector.size() * RECORDSIZE) / BLOCKSIZE);
                     cout << "Number of data blocks: " << res << endl;
+                    cout << "Contents of data blocks: " << endl; // NEW
 
                     for (int j = 0; j < cursor->key[i].keyVector.size(); ++j)
                     {
                         totalAverageRating = totalAverageRating + float((*(Record *)cursor->key[i].keyVector[j]).averageRating);
                     }
 
-                    for (int k = 0; k < 5; ++k)
+                    cout << "Data Block: " << endl;
+                    for (int k = 0; k < cursor->key[i].keyVector.size(); ++k)
                     {
-                        cout << "Data Block: " << (uchar *)cursor->key[i].keyVector[k] << endl;
-                        cout << "Contents of data block: " << endl;
-                        cout << "tconst: " << (*(Record *)cursor->key[i].keyVector[k]).tconst << " | averageRating: " << (*(Record *)cursor->key[i].keyVector[k]).averageRating << " | numVotes: " << (*(Record *)cursor->key[i].keyVector[k]).numVotes << endl;
+                        if (printedDataBlocks < 5)
+                        {
+                            cout << "tconst: " << (*(Record *)cursor->key[i].keyVector[k]).tconst << endl;
+                            recordsInADataBlock++;
+                            if (recordsInADataBlock == MAX)
+                            {
+                                recordsInADataBlock = 0;
+                                printedDataBlocks++;
+                                cout << "End of previous data block" << endl;
+                                printf("\n");
+                            }
+                        }
                     }
 
-                    cout << "Average of averageRatings from records whose numVotes == 500: " << totalAverageRating / cursor->key[i].keyVector.size() << endl;
+                    printf("Average of averageRatings from records whose numVotes == 500: %.3f\n", (totalAverageRating / cursor->key[i].keyVector.size()));
                     cout << "Number of index nodes accessed: " << countOfIndexNodesAccessed << endl;
                 }
                 return cursor;
@@ -105,6 +118,7 @@ Node *BPTree::rangesearch(int lowerBound, int upperBound, bool flag, bool printe
     bool isFound = false;
     int printedIndexNodes = 0;
     int printedDataBlocks = 0;
+    int recordsInADataBlock = 0;
 
     if (root == NULL)
     {
@@ -157,6 +171,7 @@ Node *BPTree::rangesearch(int lowerBound, int upperBound, bool flag, bool printe
             i++;
         }
 
+        cout << "Data block" << endl;
         while (cursor->ptr[cursor->size] != NULL && cursor->key[i].key_value <= upperBound)
         {
             if (printer == true && printedIndexNodes < 5)
@@ -173,10 +188,15 @@ Node *BPTree::rangesearch(int lowerBound, int upperBound, bool flag, bool printe
 
                 if (printer == true && printedDataBlocks < 5)
                 {
-                    cout << "Data Block: " << (uchar *)cursor->key[i].keyVector[j] << endl;
-                    cout << "Contents of data block: " << endl;
-                    cout << "tconst: " << (*(Record *)cursor->key[i].keyVector[j]).tconst << " | averageRating: " << (*(Record *)cursor->key[i].keyVector[j]).averageRating << " | numVotes: " << (*(Record *)cursor->key[i].keyVector[j]).numVotes << endl;
-                    printedDataBlocks++;
+                    cout << "tconst: " << (*(Record *)cursor->key[i].keyVector[j]).tconst << endl;
+                    recordsInADataBlock++;
+                    if (recordsInADataBlock == MAX)
+                    {
+                        recordsInADataBlock = 0;
+                        printedDataBlocks++;
+                        cout << "End of previous data block" << endl;
+                        printf("\n");
+                    }
                 }
             }
 
@@ -193,7 +213,7 @@ Node *BPTree::rangesearch(int lowerBound, int upperBound, bool flag, bool printe
         float res = ceil((float(countOfRecords) * RECORDSIZE) / float(BLOCKSIZE));
         cout << "Number of data blocks accessed: " << res << endl;
         cout << "Number of index nodes accessed: " << countOfIndexNodesAccessed << endl;
-        cout << "Average of averageRatings from records whose numVotes between 30000 to 40000 (inclusive): " << totalAverageRating / countOfRecords << endl;
+        printf("Average of averageRatings from records whose numVotes between 30000 to 40000 (inclusive): %.3f\n", (totalAverageRating / countOfRecords));
 
         if (isFound)
         {
@@ -220,17 +240,17 @@ void BPTree::nodePrinter(int option, Node *cursor)
         {
             if (i != cursor->size)
             {
-                cout << cursor->ptr[i] << " | " << cursor->key[i].key_value << " | ";
+                cout << cursor->key[i].key_value << " | ";
             }
         }
-        cout << cursor->ptr[cursor->size] << endl;
+        cout << endl;
     }
     else if (option == 2)
     {
         cout << "Non-leaf index node: " << endl;
         for (int j = 0; j < cursor->size; j++)
         {
-            cout << cursor->ptr[j] << " | " << cursor->key[j].key_value << " | ";
+            cout << cursor->key[j].key_value << " | ";
         }
         cout << endl;
     }
@@ -248,9 +268,9 @@ void BPTree::nodePrinter(int option, Node *cursor)
         cout << "First child node contents: " << endl;
         for (int j = 0; j < cursor->ptr[0]->size; j++)
         {
-            cout << cursor->ptr[0]->ptr[j] << " | " << cursor->ptr[0]->key[j].key_value << " | ";
+            cout << cursor->ptr[0]->key[j].key_value << " | ";
         }
-        cout << cursor->ptr[0]->ptr[cursor->ptr[0]->size] << endl;
+        cout << endl;
     }
     return;
 }

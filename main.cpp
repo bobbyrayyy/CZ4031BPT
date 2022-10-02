@@ -23,7 +23,7 @@ int main()
     DiskStorage disk(DISKSIZE, BLOCKSIZE);
     cout << "Blocksize is : " << BLOCKSIZE << endl;
 
-    std::ifstream file("../data/data.tsv");
+    std::ifstream file("data/data.tsv");
 
     vector<tuple<void *, uint>> dataset;
     bool flag = true;

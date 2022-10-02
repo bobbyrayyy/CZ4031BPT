@@ -24,12 +24,7 @@ cd src
 
 (MacOS users: I added -std=c++11 flag to solve compilation error.)
 ```bash
-g++ -c main.cpp;
-g++ -c bplustree.cpp;
-g++ -c bplustree_delete.cpp;
-g++ -c bplustree_insert.cpp;
-g++ -c bplustree_search.cpp;
-g++ -c disk_storage.cpp;
+g++ -c main.cpp bpt/bplustree.cpp bpt/bplustree_delete.cpp bpt/bplustree_insert.cpp bpt/bplustree_search.cpp storage/disk_storage.cpp
 ```
 
 4. Link main.exe file
