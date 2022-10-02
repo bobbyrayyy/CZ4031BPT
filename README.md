@@ -31,6 +31,8 @@ g++ -c main.cpp bpt/bplustree.cpp bpt/bplustree_delete.cpp bpt/bplustree_insert.
 ```bash
 g++ -o main.exe bplustree_insert.o bplustree_delete.o bplustree_search.o bplustree.o disk_storage.o main.o
 ```
+Note that *.o files will all be in current directory (sane level).
+
 5. Setting block size and paramenter n
 - To run experiment with block size 200B, go to disk_storage.h and uncomment lines 13 and 14, and comment out lines 17 and 18.
 - To run experiment with block size 500B, go to disk_storage.h and comment out lines 13 and 14, and uncomment lines 17 and 18.
